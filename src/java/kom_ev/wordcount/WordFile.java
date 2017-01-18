@@ -18,7 +18,7 @@ public class WordFile {
 
     private boolean execute(String fileName, String lang) {
         try {
-            String[] temp = parseFile(changeFileEncoding(fileName));
+            String[] temp = parseFile(readFile(fileName), lang);
             System.out.println(mapFile(temp).mapSort((o1, o2) -> o2.getValue() - o1.getValue()));
             return true;
         } catch (IOException e) {
@@ -27,11 +27,12 @@ public class WordFile {
         }
     }
 
-    private String[] parseFile(String fileData) throws IOException {
+    private String[] parseFile(String fileData, String lang) throws IOException {
         fileData = fileData.replace(System.getProperty("line.separator"), " ").toLowerCase();
-        fileData = fileData.replaceAll("[^а-яёА-ЯЁ ]","");
+        fileData = fileData.replaceAll("[^а-яёА-ЯЁ ]","").replaceAll("  "," ");
         return fileData.split(" ");
     }
+
     private HashMapToSortedList<String, Integer> mapFile(String[] parsedFileData){
         HashMapToSortedList<String, Integer> mapFile = new HashMapToSortedList<> ();
         for(String word : parsedFileData){
@@ -45,9 +46,11 @@ public class WordFile {
         return mapFile;
     }
 
-    private String changeFileEncoding(String directory) throws IOException {
-        String readFile = Files.readAllLines(Paths.get(directory), Charset.forName("cp1251")).toString();
-        System.out.println(readFile);
-        return new String (readFile.getBytes("UTF-8"), Charset.forName("UTF-8"));
+    private String readFile(String directory) throws IOException {
+//        String readFile = Files.readAllLines(Paths.get(directory), Charset.forName("cp1251")).toString();
+//        System.out.println(readFile);
+//        String (readFile.getBytes("UTF-8"), Charset.forName("UTF-8"));
+//        System.out.println(Files.readAllLines(Paths.get(directory), Charset.forName("cp1251")).toString());
+        return Files.readAllLines(Paths.get(directory), Charset.forName("cp1251")).toString();
     }
 }
