@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 /**
  * Created by EKomarov on 18.01.2017.
@@ -18,7 +19,7 @@ public class WordFile {
 
     private boolean execute(String fileName, String lang) {
         try {
-            String[] temp = parseFile(readFile(fileName), lang);
+            String[] temp = parseFile(readFile(fileName, lang), lang);
             System.out.println(mapFile(temp).mapSort((o1, o2) -> o2.getValue() - o1.getValue()));
             return true;
         } catch (IOException e) {
@@ -29,7 +30,10 @@ public class WordFile {
 
     private String[] parseFile(String fileData, String lang) throws IOException {
         fileData = fileData.replace(System.getProperty("line.separator"), " ").toLowerCase();
-        fileData = fileData.replaceAll("[^а-яёА-ЯЁ ]","").replaceAll("  "," ");
+        if (Objects.equals(lang, "rus"))
+            fileData = fileData.replaceAll("[^а-яёА-ЯЁ ]","").replaceAll("  +"," ").substring(1);
+        else
+            fileData = fileData.replaceAll("[^a-zA-Z ]","").replaceAll("  +"," ").substring(1);
         return fileData.split(" ");
     }
 
@@ -43,14 +47,14 @@ public class WordFile {
                 mapFile.put(word, count + 1);
             }
         }
+//        System.out.println(mapFile.get(""));
         return mapFile;
     }
 
-    private String readFile(String directory) throws IOException {
-//        String readFile = Files.readAllLines(Paths.get(directory), Charset.forName("cp1251")).toString();
-//        System.out.println(readFile);
-//        String (readFile.getBytes("UTF-8"), Charset.forName("UTF-8"));
-//        System.out.println(Files.readAllLines(Paths.get(directory), Charset.forName("cp1251")).toString());
-        return Files.readAllLines(Paths.get(directory), Charset.forName("cp1251")).toString();
+    private String readFile(String directory, String lang) throws IOException {
+        if (Objects.equals(lang, "rus"))
+            return Files.readAllLines(Paths.get(directory), Charset.forName("cp1251")).toString();
+        else
+            return Files.readAllLines(Paths.get(directory), Charset.forName("utf-8")).toString();
     }
 }
