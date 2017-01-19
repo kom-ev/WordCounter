@@ -4,6 +4,8 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -14,13 +16,20 @@ public class WordFile {
 
     public static void main(String[] args) {
         WordFile newFile = new WordFile();
-        newFile.execute(args[0], args[1], args[2]);
+        newFile.execute(args[0], args[1]);
     }
 
-    private boolean execute(String fileName,String lang, String encoding) {
+    private boolean execute(String fileName, String encoding) {
         try {
-            String[] temp = parseFile(readFile(fileName, encoding), lang);
-            System.out.println(mapFile(temp).mapSort((o1, o2) -> o2.getValue() - o1.getValue()));
+            String[] temp = parseFile(readFile(fileName, encoding));
+            List<Map.Entry<String, Integer>> sortedList = mapFile(temp).mapSort((o1, o2) -> o2.getValue() - o1.getValue());
+            System.out.println(sortedList);
+            try(  PrintWriter out = new PrintWriter(fileName.substring(0,fileName.lastIndexOf("\\") + 1)+
+                                                             fileName.substring(fileName.lastIndexOf("\\") + 1,
+                                                             fileName.lastIndexOf(".")) + "_words.txt")){
+                for (Map.Entry<String, Integer> map : sortedList)
+                out.println(map);
+            }
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -28,12 +37,10 @@ public class WordFile {
         }
     }
 
-    private String[] parseFile(String fileData, String lang) throws IOException {
+    private String[] parseFile(String fileData) throws IOException {
         fileData = fileData.replace(System.getProperty("line.separator"), " ").toLowerCase();
-        if (Objects.equals(lang, "rus"))
-            fileData = fileData.replaceAll("[^а-я ]","").replaceAll("  +"," ").substring(1);
-        else
-            fileData = fileData.replaceAll("[^a-z ]","").replaceAll("  +"," ").substring(1);
+        fileData = fileData.replaceAll("[\\p{Graph}—«»…–?:\uFEFF ]","").replaceAll("  +"," ").trim();
+        System.out.println(fileData);
         return fileData.split(" ");
     }
 
@@ -41,10 +48,10 @@ public class WordFile {
         HashMapToSortedList<String, Integer> mapFile = new HashMapToSortedList<> ();
         for(String word : parsedFileData){
             if(!mapFile.containsKey(word))
-                mapFile.put(word, 1);
+                mapFile.put(word.trim(), 1);
             else{
                 int count = mapFile.get(word);
-                mapFile.put(word, count + 1);
+                mapFile.put(word.trim(), count + 1);
             }
         }
 //        System.out.println(mapFile.get(""));
