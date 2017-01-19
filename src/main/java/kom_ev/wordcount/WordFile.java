@@ -31,9 +31,9 @@ public class WordFile {
     private String[] parseFile(String fileData, String lang) throws IOException {
         fileData = fileData.replace(System.getProperty("line.separator"), " ").toLowerCase();
         if (Objects.equals(lang, "rus"))
-            fileData = fileData.replaceAll("[^а-яёА-ЯЁ ]","").replaceAll("  +"," ").substring(1);
+            fileData = fileData.replaceAll("[^а-я ]","").replaceAll("  +"," ").substring(1);
         else
-            fileData = fileData.replaceAll("[^a-zA-Z ]","").replaceAll("  +"," ").substring(1);
+            fileData = fileData.replaceAll("[^a-z ]","").replaceAll("  +"," ").substring(1);
         return fileData.split(" ");
     }
 
