@@ -14,12 +14,12 @@ public class WordFile {
 
     public static void main(String[] args) {
         WordFile newFile = new WordFile();
-        newFile.execute(args[0], args[1]);
+        newFile.execute(args[0], args[1], args[2]);
     }
 
-    private boolean execute(String fileName, String lang) {
+    private boolean execute(String fileName,String lang, String encoding) {
         try {
-            String[] temp = parseFile(readFile(fileName, lang), lang);
+            String[] temp = parseFile(readFile(fileName, encoding), lang);
             System.out.println(mapFile(temp).mapSort((o1, o2) -> o2.getValue() - o1.getValue()));
             return true;
         } catch (IOException e) {
@@ -51,10 +51,7 @@ public class WordFile {
         return mapFile;
     }
 
-    private String readFile(String directory, String lang) throws IOException {
-        if (Objects.equals(lang, "rus"))
-            return Files.readAllLines(Paths.get(directory), Charset.forName("cp1251")).toString();
-        else
-            return Files.readAllLines(Paths.get(directory), Charset.forName("utf-8")).toString();
+    private String readFile(String directory, String encoding) throws IOException {
+            return Files.readAllLines(Paths.get(directory), Charset.forName(encoding)).toString();
     }
 }
