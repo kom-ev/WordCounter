@@ -14,8 +14,11 @@ import java.util.Map;
 public class WordFile {
 
     public static void main(String[] args) {
+        long startTime = System.nanoTime();
         WordFile newFile = new WordFile();
         newFile.execute(args[0], args[1]);
+        long endTime = System.nanoTime();
+        System.out.println("Execution time: " + (endTime - startTime)/1000000 + " milliseconds");
     }
 
     private boolean execute(String fileName, String encoding) {
@@ -44,6 +47,7 @@ public class WordFile {
     }
 
     private HashMapToSortedList<String, Integer> mapFile(String[] parsedFileData){
+        System.out.println("Total number of words processed: " + parsedFileData.length);
         HashMapToSortedList<String, Integer> mapFile = new HashMapToSortedList<> ();
         for(String word : parsedFileData){
             if(!mapFile.containsKey(word))
@@ -53,6 +57,7 @@ public class WordFile {
                 mapFile.put(word.trim(), count + 1);
             }
         }
+        System.out.println("Number of unique words: " + mapFile.size());
 //        System.out.println(mapFile.get(""));
         return mapFile;
     }
