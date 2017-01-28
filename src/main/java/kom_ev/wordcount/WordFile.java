@@ -22,7 +22,7 @@ public class WordFile {
     }
 
     private boolean execute(String fileName, String encoding) {
-        try {
+            try {
             String[] temp = parseFile(readFile(fileName, encoding));
             List<Map.Entry<String, Integer>> sortedList = mapFile(temp).mapSort((o1, o2) -> o2.getValue() - o1.getValue());
 //            System.out.println(sortedList);
